@@ -1,2 +1,76 @@
-ciao
+// es 8
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/wait.h>
+#include <ctype.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
+int main(int argc, char *argv[])
+{
+    // dichiaro variabili
+    int p1, piped[2];
+    char stringa[50];
+    pipe(piped);
+
+    // verifico n parametri corretti
+    if (argc != 2)
+    {
+        printf("ERRORE nel numero dei parametri\n");
+        exit(0);
+    }
+
+    p1 = fork();
+    if (p1 == 0) // figlio 1
+    {
+        close(piped[0]); // chiudo canale lettura
+        while (1)
+        {
+            printf("Inserisci una stringa: \n");
+            scanf("%s", stringa);
+
+            if (strcmp(stringa, "esci") == 0)
+            {
+                close(piped[1]); // chiudo pipe in scrittura
+                printf("Uscito dall'esecuzione. \n");
+                exit(0);
+            }
+            strcat(stringa, "\n");
+            write(piped[1], stringa, strlen(stringa));
+        }
+    }
+    else if (p1 > 0) // padre
+    {
+        close(piped[1]);
+        p1 = fork();
+        if (p1 == 0) // 2 figlio
+        {
+            // close(piped[1]); // chiudo canale scrittura pipe
+            close(0);        // chiudo std in
+            dup(piped[0]);   // duplico canale di lettura della pipe
+            close(piped[0]); // chiudo pipe che ha rimpiazzato std in...
+            
+            close(1);
+            open(argv[1], O_WRONLY | O_CREAT, 0777); // CREA FILE IN CUI CHIUNQUE PUÒ SCRIVERE
+            
+            execl("/usr/bin/sort", "sort", NULL);    // spedisce risultato (output) comando sort ad argv[1]
+            return -1;
+        }
+        else if (p1 < 0) // errore
+        {
+            printf("Errore nella generazione del 2 figlio\n");
+            exit(0);
+        }
+        //wait(&p1);
+    }
+    else // errore
+    {
+        printf("Errore nella generazione del 1 figlio\n");
+        exit(0);
+    }
+    close(piped[0]);
+
+    wait(&p1);
+    return (0);
+}
