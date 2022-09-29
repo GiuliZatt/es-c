@@ -1,0 +1,179 @@
+#include <stdio.h>
+ 
+void InserisciElemento(int vet[100], int *d)
+{
+   if (*d < 100)
+   {
+       printf("Inserisci un Elemento: ");
+       scanf("%d", &vet[*d]);
+       *d = *d + 1;
+   }
+   else
+       printf("il vettore è pieno\n");
+}
+// 1. Stampa degli elementi array
+void StampaArray(int v[100], int d)
+{
+   int i;
+   if (d == 0)
+       printf("il vettore è vuoto");
+   else
+   {
+       for (i = 0; i < d; i++)
+           printf("\n %d", v[i]);
+   }
+}
+ 
+void StampaInversa(int v[100], int d)
+{
+   int i;
+   if (d == 0)
+       printf("il vettore è vuoto");
+   else
+   {
+       for (i = d - 1; i >= 0; i--)
+           printf("\n %d", v[i]);
+   }
+}
+ 
+void SommaMedia(int v[100], int d)
+{
+   int somma = 0, i;
+   float media;
+   for (i = 0; i < d; i++)
+       somma += v[i];
+ 
+   media = (float)somma / d;
+   printf("somma = %d \n", somma);
+   printf("Media = %f \n", media);
+}
+void Pari(int v[100], int d)
+{
+   int i;
+   for (i = 0; i < d; i++)
+   {
+       if (v[i] % 2 == 0) // se è pari
+           printf("%d\t", v[i]);
+   }
+}
+void Dispari(int v[100], int d)
+{
+   int i;
+   for (i = 0; i < d; i++)
+   {
+       if (v[i] % 2 == 1)
+           printf("%d\t", v[i]);
+   }
+}
+void Ricerca(int v[100], int d)
+{
+   int e;
+   int i;
+   printf("Che elemento vuoi cercare? \t");
+   scanf("%d", &e);
+   for (i = 0; i < d; i++)
+   {
+       if (e == v[i])
+           printf("Elemento trovato in posizione: %d\t", i);
+   }
+}
+void Elimina(int v[100], int *d)
+{
+   int n;
+   printf("Che elemento vuoi eliminare? \t");
+   scanf("%d", &n);
+   int i;
+   for (i = 0; i < *d; i++)
+   {
+       if (v[i] == n) // se è l'elemento da eliminare
+       {
+           for (int k = i + 1; k < *d; k++)
+           {
+               v[k - 1] = v[k];
+               (*d)--; // decremento di 1 la dimensione vettore
+           }
+       }
+   }
+}
+ 
+void AlternareoScambiare(int v[100], int d)
+{
+   int i, temp;
+   for (i = 0; i < d - 1; i = i + 2) // per ogni elemento del
+   {
+       temp = v[i];
+       v[i] = v[i + 1];
+       v[i + 1] = temp;
+   }
+}
+ 
+void Ordinamento(int v[100], int d) // bubblesort
+{
+   int i, j, temp;
+   for (i = 0; i < d - 1; i++)
+       for (j = d - 1; j > i; j--)
+           if (v[j] < v[j - 1])
+           {
+               temp = v[j];
+               v[j] = v[j - 1];
+               v[j - 1] = temp;
+           }
+}
+ 
+int main(int argc, char *argv[])
+{
+   int vett[100], i, dim = 0, opzione, vett2[100];
+   do
+   {
+       printf("\n0. Esci\n");
+       printf("1. Stampa degli elementi array;\n");
+       printf("2. Stampa inversa degli elementi dell’array;\n");
+       printf("3. Somma e media degli elementi del vettore;\n");
+       printf("4. Stampa tutti i numeri pari;\n");
+       printf("5. Stampa tutti i numeri dispari;\n");
+       printf("6. Ricerca di un numero nell’array (letto in input);\n");
+       printf("7. Eliminare un elemento dell’array (se esistente);\n");
+       printf("8. Alternare (o scambiare) a due a due le posizioni del vettore;\n");
+       printf("9. Ordinamento del vettore;\n");
+       printf("10. Inserisci un elemento nel vettore. \n");
+ 
+       printf("Inserisci l'opzione che preferisci: ");
+       scanf(" %d", &opzione);
+       switch (opzione)
+       {
+       case 1:
+           StampaArray(vett, dim);
+           break;
+       case 2:
+           StampaInversa(vett, dim);
+           break;
+       case 3:
+           SommaMedia(vett, dim);
+           break;
+       case 4:
+           Pari(vett, dim);
+           break;
+       case 5:
+           Dispari(vett, dim);
+           break;
+       case 6:
+           Ricerca(vett, dim);
+           break;
+       case 7:
+           Elimina(vett, &dim);
+           break;
+       case 8:
+           AlternareoScambiare(vett, dim);
+           break;
+       case 9:
+           Ordinamento(vett, dim);
+           break;
+       case 10:
+           InserisciElemento(vett, &dim);
+           break;
+       }
+   } while (opzione != 0);
+   printf("Ciao, hai finito\n");
+   return 0;
+}
+
